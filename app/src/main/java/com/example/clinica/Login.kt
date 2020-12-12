@@ -2,7 +2,6 @@ package com.example.clinica
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -12,10 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class Login : AppCompatActivity() {
 
-    companion object {
-        val TAG = "Login"
-        val RC_SIGN_IN = 1001
-    }
+
     val auth = FirebaseAuth.getInstance();
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +43,6 @@ class Login : AppCompatActivity() {
 
                     } else {
                         // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithEmail:failure", task.exception)
                         Toast.makeText(baseContext, "Authentication failed.",
                             Toast.LENGTH_SHORT).show()
 
