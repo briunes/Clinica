@@ -39,7 +39,7 @@ class Login : AppCompatActivity() {
                         auth.currentUser
 
                         Toast.makeText(baseContext, "Authentication success.${auth.currentUser?.email.toString()}}",Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, CompleteUserData::class.java)
+                        val intent = Intent(this, WelcomePage::class.java)
                         startActivity(intent)
 
 

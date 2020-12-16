@@ -9,5 +9,10 @@ class Specialty {
         name       = Name
 
     }
+    constructor(){
+
+        name       = ""
+
+    }
 }
 

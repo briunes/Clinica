@@ -13,18 +13,14 @@ import com.google.firebase.database.ktx.getValue
 
 
 class CompleteUserData : AppCompatActivity() {
-
-    val auth = FirebaseAuth.getInstance();
-    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_complete_user_data)
-
-        val user = auth.currentUser
-        val btnConfirm = findViewById<Button>(R.id.btnCreate)
-        val myRef: DatabaseReference = database.getReference("Users/${user?.uid}/Data")
+        val auth = FirebaseAuth.getInstance();
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        val user = auth.currentUser
+        val myRef: DatabaseReference = database.getReference("Users/${user?.uid}/Data")
 
 
 
@@ -38,21 +34,29 @@ class CompleteUserData : AppCompatActivity() {
             val address = findViewById<TextView>(R.id.inputAddress)
             val processNumber = findViewById<TextView>(R.id.inputProcessNumber)
             val btnConfirm = findViewById<Button>(R.id.btnCreate)
-            val checkData : User
 
+
+            val btnSkip = findViewById<Button>(R.id.btnSkip)
+            btnSkip.setOnClickListener {
+                val intent = Intent(this, WelcomePage::class.java)
+                startActivity(intent)
+
+            }
 
             myRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val checkData = dataSnapshot.getValue<User>()
+                    if (checkData != null) {
 
-                    if (checkData != null) setContentView(R.layout.activity_welcome_page);
 
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(applicationContext, "Failed to read value.", Toast.LENGTH_SHORT).show()
                 }
             })
+
 
 
             btnConfirm.setOnClickListener {

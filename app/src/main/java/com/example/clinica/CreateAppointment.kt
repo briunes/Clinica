@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clinica.Class.Appointment
+import com.example.clinica.Class.Specialty
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,10 +18,13 @@ class CreateAppointment : AppCompatActivity() {
 
     val auth = FirebaseAuth.getInstance()
 
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
+    val myRef: DatabaseReference = database.getReference("Specialties")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_appointment)
+        var specialties: MutableList<String> = ArrayList<String>()
 
         val user = auth.currentUser
         if (user != null) {
@@ -31,14 +34,27 @@ class CreateAppointment : AppCompatActivity() {
             startActivity(intent)
         }
 
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                specialties.clear()
+                for (productSnapshot in dataSnapshot.children) {
+                    val specialty = productSnapshot.getValue(Specialty::class.java)
+                    specialties.add(specialty!!.name.toString())
+
+                }
+
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(applicationContext, "Failed to read value.", Toast.LENGTH_SHORT)  .show()
+            }
+        })
+
+
 
         //dados estaticos de especialidades
-        val specialtys = arrayOf<String>(
-            "Especialidade 1",
-            "Especialidade 2",
-            "Especialidade 3",
-            "Especialidade 4"
-        )
+
 
         val btnCreate = findViewById<Button>(R.id.btn_create_appointment)
         //É a dropdown list com especialidades
@@ -62,7 +78,7 @@ class CreateAppointment : AppCompatActivity() {
         if (spinner != null) {
             val adapter = ArrayAdapter(
                 this,
-                android.R.layout.simple_spinner_item, specialtys
+                android.R.layout.simple_spinner_item, specialties
             )
             spinner.adapter = adapter
 
