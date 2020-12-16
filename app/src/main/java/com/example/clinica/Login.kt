@@ -18,7 +18,11 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-
+        val user = auth.currentUser
+        if (user != null) {
+            val intent = Intent(this, WelcomePage::class.java)
+            startActivity(intent)
+        }
 
         val btnLogin = findViewById<Button>(R.id.btn_register)
         val email = findViewById<TextView>(R.id.inputEmail)
@@ -35,9 +39,8 @@ class Login : AppCompatActivity() {
 
                         auth.currentUser
 
-                        Toast.makeText(baseContext, "Authentication success.${auth.currentUser?.email.toString()}}",
-                            Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, WelcomePage::class.java)
+                        Toast.makeText(baseContext, "Authentication success.${auth.currentUser?.email.toString()}}",Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, CompleteUserData::class.java)
                         startActivity(intent)
 
 

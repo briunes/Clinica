@@ -6,15 +6,19 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.clinica.R.id.*
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
+data class especialide(
+        var name            : String? = "",
 
+)
 class WelcomePage : AppCompatActivity() {
 
     lateinit var toggle : ActionBarDrawerToggle
@@ -39,8 +43,10 @@ class WelcomePage : AppCompatActivity() {
             val txtEmail = findViewById<TextView>(textViewEmail)
             val txtName = findViewById<TextView>(textViewName)
 
+            val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            val myRef: DatabaseReference = database.getReference("Users/${user.uid}")
 
-            Toast.makeText(applicationContext,"${user.uid}" ,Toast.LENGTH_SHORT).show()
+
 
 
 
@@ -51,9 +57,21 @@ class WelcomePage : AppCompatActivity() {
 
             navView.setNavigationItemSelectedListener{
                 when(it.itemId) {
-                    action_settings -> Toast.makeText(applicationContext,"Settings", Toast.LENGTH_SHORT).show()
-                    action_contacts -> Toast.makeText(applicationContext,"Contacts", Toast.LENGTH_SHORT).show()
-                    action_logout -> FirebaseAuth.getInstance().signOut()
+                    R.id.action_contacts ->{
+
+                        val intent = Intent(this, Contacts::class.java)
+                        startActivity(intent)
+                    }
+                    R.id.action_settings ->{
+                        val intent = Intent(this, Contacts::class.java)
+                        startActivity(intent)
+                    }
+                    R.id.action_logout->{
+                        FirebaseAuth.getInstance().signOut()
+                        val intent = Intent(this, Login::class.java )
+                        startActivity(intent)
+                    }
+
                 }
                 true
 
@@ -78,11 +96,29 @@ class WelcomePage : AppCompatActivity() {
                 startActivity(intent)
             }
             btnGetReceits.setOnClickListener{
-                val intent = Intent(this, GetReceipts::class.java)
-                startActivity(intent)
+
+
+               /* val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+                val myRef: DatabaseReference = database.getReference("Specialties")
+
+                val Dados = especialide("Neurologia")
+                val Dados1 = especialide("Pneumologia")
+                val Dados2 = especialide("Medicina física")
+                val Dados3 = especialide("Reabilitação")
+                val Dados4 = especialide("Cuidados paliativos")
+                myRef.push().setValue(Dados)
+                myRef.push().setValue(Dados1)
+                myRef.push().setValue(Dados2)
+                myRef.push().setValue(Dados3)
+                myRef.push().setValue(Dados4)*/
             }
+
+
+
         }
-        //in case user is logged out goes to main page
+
+
+                //in case user is logged out goes to main page
         else {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

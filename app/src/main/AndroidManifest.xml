@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clinica">
+        <activity android:name=".CompleteUserData"></activity>
         <activity
             android:name=".Contacts"
             android:label="@string/title_activity_contacts"
-            android:theme="@style/Theme.Clinica.NoActionBar"></activity>
+            android:theme="@style/Theme.Clinica.NoActionBar" />
         <activity android:name=".CreateAppointment" />
         <activity
             android:name=".GetAppointments"
