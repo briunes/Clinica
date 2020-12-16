@@ -27,7 +27,6 @@ class Login : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btn_register)
         val email = findViewById<TextView>(R.id.inputEmail)
         val password = findViewById<TextView>(R.id.inputPassword)
-        val passwordConfirm = findViewById<TextView>(R.id.inputPasswordConfirm)
 
 
         btnLogin.setOnClickListener{

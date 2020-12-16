@@ -34,9 +34,7 @@ class WelcomePage : AppCompatActivity() {
 
             // Initialize variables
             val btnTalkMedic = findViewById<Button>(btn_Talk_Medic)
-            val btnGetDocs = findViewById<Button>(btn_get_Documents)
             val btnGetAppointments = findViewById<Button>(btn_get_appointments)
-            val btnGetReceits = findViewById<Button>(btn_get_receipts)
             val drawerLayout = findViewById<DrawerLayout>(drawerLayout)
             val navView = findViewById<NavigationView>(navView)
             val drawerToggleBtn = findViewById<Button>(btn_pull_drawer)
@@ -68,7 +66,7 @@ class WelcomePage : AppCompatActivity() {
                     }
                     R.id.action_logout->{
                         FirebaseAuth.getInstance().signOut()
-                        val intent = Intent(this, Login::class.java )
+                        val intent = Intent(this, MainActivity::class.java )
                         startActivity(intent)
                     }
 
@@ -91,30 +89,6 @@ class WelcomePage : AppCompatActivity() {
                 val intent = Intent(this, ChatMedic::class.java)
                 startActivity(intent)
             }
-            btnGetDocs.setOnClickListener{
-                val intent = Intent(this, GetDocuments::class.java)
-                startActivity(intent)
-            }
-            btnGetReceits.setOnClickListener{
-
-
-               /* val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-                val myRef: DatabaseReference = database.getReference("Specialties")
-
-                val Dados = especialide("Neurologia")
-                val Dados1 = especialide("Pneumologia")
-                val Dados2 = especialide("Medicina física")
-                val Dados3 = especialide("Reabilitação")
-                val Dados4 = especialide("Cuidados paliativos")
-                myRef.push().setValue(Dados)
-                myRef.push().setValue(Dados1)
-                myRef.push().setValue(Dados2)
-                myRef.push().setValue(Dados3)
-                myRef.push().setValue(Dados4)*/
-            }
-
-
-
         }
 
 

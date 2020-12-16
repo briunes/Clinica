@@ -4,33 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.clinica.Class.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-
-data class User2(
-        var name            : String? = "",
-        var telephone       : String? = "",
-        var birthday        : String? = "",
-        var CCnumber        : String? = "",
-        var numberUtent     : String? = "",
-        var address         : String? = "",
-        var processNumber   : String? = ""
-)
-
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 
 
 class CompleteUserData : AppCompatActivity() {
 
     val auth = FirebaseAuth.getInstance();
-
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_complete_user_data)
 
         val user = auth.currentUser
         val btnConfirm = findViewById<Button>(R.id.btnCreate)
+        val myRef: DatabaseReference = database.getReference("Users/${user?.uid}/Data")
+
+        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+
 
 
         if (user != null) {
@@ -42,12 +37,28 @@ class CompleteUserData : AppCompatActivity() {
             val numberUtent = findViewById<TextView>(R.id.inputNumberUtent)
             val address = findViewById<TextView>(R.id.inputAddress)
             val processNumber = findViewById<TextView>(R.id.inputProcessNumber)
+            val btnConfirm = findViewById<Button>(R.id.btnCreate)
+            val checkData : User
+
+
+            myRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val checkData = dataSnapshot.getValue<User>()
+
+                    if (checkData != null) setContentView(R.layout.activity_welcome_page);
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(applicationContext, "Failed to read value.", Toast.LENGTH_SHORT).show()
+                }
+            })
+
 
             btnConfirm.setOnClickListener {
 
-                val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-                val myRef: DatabaseReference = database.getReference("Users/${user?.uid}")
-                val DATA = User2(
+
+                val DATA = User(
                     name.text.toString(),
                     telephone.text.toString(),
                     birthday.text.toString(),
@@ -63,12 +74,5 @@ class CompleteUserData : AppCompatActivity() {
         }
 
 
-        val btnSkip = findViewById<Button>(R.id.btnSkip)
-
-
-        btnSkip.setOnClickListener {
-            val intent = Intent(this, WelcomePage::class.java)
-            startActivity(intent)
-        }
     }
 }

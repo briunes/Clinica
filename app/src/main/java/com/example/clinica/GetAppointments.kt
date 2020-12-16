@@ -16,7 +16,6 @@ import com.google.firebase.database.*
 
 
 class GetAppointments : AppCompatActivity() {
-    //var appointments: MutableList<Appointment> = ArrayList()
     var appointments: MutableList<Appointment> = ArrayList<Appointment>()
 
     var adapter = AppointmentsAdapter()
@@ -50,7 +49,7 @@ class GetAppointments : AppCompatActivity() {
                     appointments.add(appointment!!)
 
                 }
-                //adapter.notifyDataSetChanged()
+                // --> adapter.notifyDataSetChanged()
                 Toast.makeText(applicationContext, "${appointments.size}", Toast.LENGTH_SHORT)  .show()
                 if(appointments.isEmpty())
                 {
