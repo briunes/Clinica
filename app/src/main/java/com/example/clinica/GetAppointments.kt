@@ -16,7 +16,7 @@ import com.google.firebase.database.*
 
 
 class GetAppointments : AppCompatActivity() {
-    var appointments: MutableList<Appointment> = ArrayList<Appointment>()
+    var appointments: ArrayList<Appointment> = ArrayList<Appointment>()
 
     var adapter = AppointmentsAdapter()
     val auth = FirebaseAuth.getInstance()
@@ -36,34 +36,36 @@ class GetAppointments : AppCompatActivity() {
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val myRef: DatabaseReference = database.getReference("Users/${user?.uid}/Appointments/")
+
         val ListviewAppointments = findViewById<ListView>(R.id.listviewAppointments)
 
         ListviewAppointments.adapter = adapter
 
-
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 appointments.clear()
+
                 for (productSnapshot in dataSnapshot.children) {
                     val appointment = productSnapshot.getValue(Appointment::class.java)
                     appointments.add(appointment!!)
-
                 }
-                // --> adapter.notifyDataSetChanged()
                 Toast.makeText(applicationContext, "${appointments.size}", Toast.LENGTH_SHORT)  .show()
-                if(appointments.isEmpty())
-                {
-                    Toast.makeText(applicationContext, "Não tem nenhuma consulta marcada", Toast.LENGTH_SHORT)  .show()
-                }
 
+                if(appointments.isEmpty())      Toast.makeText(applicationContext, "Não tem nenhuma consulta marcada", Toast.LENGTH_SHORT)  .show()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(applicationContext, "Failed to read value.", Toast.LENGTH_SHORT)  .show()
             }
         })
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
 
+
+        if(appointments != null)
+        {
+            adapter.notifyDataSetChanged()
+        }
+
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             val intent = Intent(this, CreateAppointment::class.java)
             startActivity(intent)
         }
@@ -76,7 +78,7 @@ class GetAppointments : AppCompatActivity() {
             val txtConfirmed = findViewById<TextView>(R.id.txtConfirmed)
             val txtDate = findViewById<TextView>(R.id.txtDate)
 
-            val appointment = appointments.get(position)
+            val appointment = appointments[position]
 
             txtspeciality.text = appointment.speciality
             txtConfirmed.text = appointment.confirmed
@@ -92,7 +94,8 @@ class GetAppointments : AppCompatActivity() {
         }
 
         override fun getItem(position: Int): Any {
-            return appointments.get(position)        }
+            return appointments[position]
+        }
 
         override fun getItemId(position: Int): Long {
             return 0
