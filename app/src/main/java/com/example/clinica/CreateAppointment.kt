@@ -3,6 +3,7 @@ package com.example.clinica
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.clinica.Class.Appointment
@@ -11,50 +12,41 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
-
-
+import kotlin.collections.ArrayList
 
 class CreateAppointment : AppCompatActivity() {
 
     val auth = FirebaseAuth.getInstance()
-
     val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-
     val myRef: DatabaseReference = database.getReference("Specialties")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_appointment)
-        var specialties: MutableList<String> = ArrayList<String>()
+        var specialties: ArrayList<String> = ArrayList<String>()
 
+        //Get log'd In user
         val user = auth.currentUser
-        if (user != null) {
 
-        } else {
+        if (user === null)
+        {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
 
+        specialties.clear()
+        specialties.add("Escolha Especialidade")
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                specialties.clear()
                 for (productSnapshot in dataSnapshot.children) {
                     val specialty = productSnapshot.getValue(Specialty::class.java)
-                    specialties.add(specialty!!.name.toString())
-
+                    specialties.add("${specialty!!.name.toString()}")
                 }
-
-
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(applicationContext, "Failed to read value.", Toast.LENGTH_SHORT)  .show()
             }
         })
-
-
-
-        //dados estaticos de especialidades
-
 
         val btnCreate = findViewById<Button>(R.id.btn_create_appointment)
         //É a dropdown list com especialidades
@@ -76,53 +68,54 @@ class CreateAppointment : AppCompatActivity() {
 
         //Open Dropdown list
         if (spinner != null) {
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item, specialties
-            )
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, specialties)
             spinner.adapter = adapter
 
-        }
+            spinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected( parent: AdapterView<*>,view: View,position: Int,id: Long) {
+                    // write code to perform some action
+                }
 
-        //Open Clock
-        btnTime.setOnClickListener{
-
-            val timeSetListener = TimePickerDialog.OnTimeSetListener{ view: TimePicker?, hourOfDay: Int, minute: Int ->
-                cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                cal.set(Calendar.MINUTE, minute)
-
-                txtTime.text = SimpleDateFormat("HH:mm").format(cal.time)
-
-            }
-            TimePickerDialog(
-                this,
-                timeSetListener,
-                cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE),
-                true
-            ).show()
-        }
-
-        calender.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            apointmentday = dayOfMonth.toString()
-            apointmentMonth = month.toString()
-        }
-        btnCreate.setOnClickListener {
-            val Apointment = Appointment(spinner.getSelectedItem().toString(), "123456789", apointmentday.toString(),apointmentMonth.toString(), SimpleDateFormat("HH:mm").format(cal.time),
-            "false")
-            myRef.push().setValue(Apointment).addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "Consulta Pedida para dia.${Apointment.day}/${Apointment.month} ás ${Apointment.hour} ",
-                            Toast.LENGTH_LONG).show()
-
-                    val intent = Intent(this, WelcomePage::class.java)
-                    startActivity(intent)
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
                 }
             }
-
-
         }
 
+            //Open Clock
+            btnTime.setOnClickListener {
+                val timeSetListener = TimePickerDialog.OnTimeSetListener { view: TimePicker?, hourOfDay: Int, minute: Int ->
+                        cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        cal.set(Calendar.MINUTE, minute)
+                        txtTime.text = SimpleDateFormat("HH:mm").format(cal.time)
 
+                    }
+                TimePickerDialog(this,timeSetListener,cal.get(Calendar.HOUR_OF_DAY),cal.get(Calendar.MINUTE),true).show()
+            }
+
+            calender.setOnDateChangeListener { view, year, month, dayOfMonth ->
+                apointmentday = dayOfMonth.toString()
+                apointmentMonth = month.toString()
+            }
+            btnCreate.setOnClickListener {
+                val Apointment = Appointment(spinner.getSelectedItem().toString(),
+                    "123456789",
+                    apointmentday.toString(),
+                    apointmentMonth.toString(),
+                    SimpleDateFormat(
+                        "HH:mm").format(cal.time),
+                    "false")
+                myRef.push().setValue(Apointment).addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(baseContext,
+                            "Consulta Pedida para dia.${Apointment.day}/${Apointment.month} ás ${Apointment.hour} ",
+                            Toast.LENGTH_LONG).show()
+
+                        val intent = Intent(this, WelcomePage::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+        }
     }
-}
