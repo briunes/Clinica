@@ -99,22 +99,32 @@ class CreateAppointment : AppCompatActivity() {
                 apointmentMonth = month.toString()
             }
             btnCreate.setOnClickListener {
-                val Apointment = Appointment(spinner.getSelectedItem().toString(),
-                    "123456789",
-                    apointmentday.toString(),
-                    apointmentMonth.toString(),
-                    SimpleDateFormat(
-                        "HH:mm").format(cal.time),
-                    "false")
-                myRef.push().setValue(Apointment).addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(baseContext,
-                            "Consulta Pedida para dia.${Apointment.day}/${Apointment.month} ás ${Apointment.hour} ",
-                            Toast.LENGTH_LONG).show()
+                if(spinner.getSelectedItem().toString() != "Escolha Especialidade")
+                {
+                    val Apointment = Appointment(
+                        spinner.getSelectedItem().toString(),
+                        "123456789",
+                        apointmentday.toString(),
+                        apointmentMonth.toString(),
+                        SimpleDateFormat(
+                            "HH:mm").format(cal.time),
+                        "false")
 
-                        val intent = Intent(this, WelcomePage::class.java)
-                        startActivity(intent)
+                    myRef.push().setValue(Apointment).addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(baseContext,
+                                "Consulta Pedida para dia.${Apointment.day}/${Apointment.month} ás ${Apointment.hour} ",
+                                Toast.LENGTH_LONG).show()
+
+                            val intent = Intent(this, WelcomePage::class.java)
+                            startActivity(intent)
+                        }
                     }
+                }
+                else
+                {
+                    Toast.makeText(baseContext,"Especialiade não Escolhida",
+                        Toast.LENGTH_LONG).show()
                 }
             }
         }
